@@ -9,6 +9,7 @@
 #include "amount.h"
 #include "../sigma/coin.h"
 #include "../liblelantus/coin.h"
+#include "../libspark/mint_transaction.h"
 #include "streams.h"
 #include "tinyformat.h"
 #include "ui_interface.h"
@@ -930,6 +931,9 @@ public:
         lelantus::PrivateCoin& coin,
         CHDMint& vDMint,
         bool generate = true);
+
+    static std::vector<CRecipient> CreateSparkMintRecipients(
+		const std::vector<spark::MintedCoinData>& outputs);
 
     static int GetRequiredCoinCountForAmount(
         const CAmount& required,

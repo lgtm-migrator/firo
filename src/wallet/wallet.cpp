@@ -2804,6 +2804,39 @@ CRecipient CWallet::CreateLelantusMintRecipient(
     }
 }
 
+std::vector<CRecipient> CWallet::CreateSparkMintRecipients(
+		const std::vector<spark::MintedCoinData>& outputs)
+{
+    const spark::Params* params = spark::Params::get_default();
+    spark::MintTransaction sparkMint(params, outputs);
+
+    // verify if the mint is valid
+    if (!sparkMint.verify()) {
+        throw std::runtime_error("Unable to validate spark mint.");
+    }
+
+    // get serialized coins, also a schnorr proof with first coin,
+    std::vector<CDataStream> serializedCoins = sparkMint.getMintedCoinsSerialized();
+
+    if (outputs.size() != serializedCoins.size())
+        throw std::runtime_error("Spark mit output number should be equal to required number.");
+
+    std::vector<CRecipient> results;
+    results.reserve(outputs.size());
+
+    for (size_t i = 0; i < outputs.size(); i++) {
+        // Create script for a coin
+        CScript script;
+        // opcode is inserted as 1 byte according to file script/script.h
+        script << OP_SPARKMINT;
+        script.insert(script.end(), serializedCoins[i].begin(), serializedCoins[i].end());
+        CRecipient recipient = {script, CAmount(outputs[i].v), false};
+        results.emplace_back(recipient);
+    }
+
+    return results;
+}
+
 // coinsIn has to be sorted in descending order.
 int CWallet::GetRequiredCoinCountForAmount(
         const CAmount& required,

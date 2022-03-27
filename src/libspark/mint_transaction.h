@@ -23,6 +23,10 @@ public:
 	);
 	bool verify();
 
+    // returns the vector of serialized coins, with first one it puts also the chnorr proof;
+    std::vector<CDataStream> getMintedCoinsSerialized();
+
+
 private:
 	const Params* params;
 	std::vector<Coin> coins;

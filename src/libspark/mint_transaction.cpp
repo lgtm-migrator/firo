@@ -50,4 +50,16 @@ bool MintTransaction::verify() {
 	return schnorr.verify(value_statement, this->value_proof);
 }
 
+std::vector<CDataStream> MintTransaction::getMintedCoinsSerialized() {
+    bool first = true;
+    for (const auto& coin : coins) {
+        CDataStream serializedCoin(SER_NETWORK, 0);
+        serializedCoin << coin;
+        if (first) {
+            serializedCoin << value_proof;
+            first = false;
+        }
+    }
 }
+
+} // namespace spark
