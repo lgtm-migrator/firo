@@ -675,6 +675,9 @@ public:
     bool IsLelantusJMint() const;
     bool IsLelantusJoinSplit() const;
 
+    // Spark
+    bool IsSparkMint() const;
+
     bool IsZerocoinRemint() const;
 
     bool IsMint() const;
