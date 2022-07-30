@@ -321,7 +321,8 @@ bool CQuorumBlockProcessor::GetCommitmentsFromBlock(const CBlock& block, const C
                 return state.DoS(100, false, REJECT_INVALID, "bad-qc-dup");
             }
 
-            ret.emplace((Consensus::LLMQType)qc.commitment.llmqType, std::move(qc.commitment));
+            auto temp = (Consensus::LLMQType) qc.commitment.llmqType;
+            ret.emplace(temp, qc.commitment);
         }
     }
 
